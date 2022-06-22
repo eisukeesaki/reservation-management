@@ -68,22 +68,31 @@ OAuth
             4. provider redirects user back to app with an access token
             5. app uses access token to access user's information which is hosted on provider's servers
             6. app creates session for the user
-    using Google OAuth to authenticate users of my application
-        required configurations on Google Cloud Console
-            ordered steps as of 2022-06-20
-                visit Google API Console
-                    create or select existing project
-                    configure consent screen
-                        provide information
-                            application information
-                            application domain
-                            developer contact information
-                        configure scopes
-                        register test users
-                    create credentials
-                        OAuth client ID
-                            provide information
-                            get client secret
+    OAuth 2.0
+        Google
+            "Sign in with Google"
+                required configurations on Google Cloud Console
+                    ordered steps as of 2022-06-20
+                        visit Google API Console
+                            create or select existing project
+                            configure consent screen
+                                provide information
+                                    application information
+                                    application domain
+                                    developer contact information
+                                configure scopes
+                                register test users
+                            create credentials
+                                OAuth client ID
+                                    provide information
+                                    get client secret
+            identity server
+                https://accounts.google.com
+                    authentication
+                        GET /login/federated
+                        logged in
+                            obtains consent from user
+                                release identity to third party
 
 ```
 

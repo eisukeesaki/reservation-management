@@ -1,12 +1,16 @@
 const express = require("express");
 const session = require("express-session");
-const logger = require("morgan");
+const { logRequest } = require("./src/utils/logging/logger");
+const path = require("path");
 const authRoutes = require("./src/routes/auth");
+
 const port = 4242;
 
 const app = express();
 
-app.use(logger("dev"));
+// app.use((req, res, next) => {
+//   logRequest(req, res, next);
+// });
 
 app.use(session({
   secret: "a-secret",
@@ -17,6 +21,9 @@ app.use(session({
 }));
 
 app.use(express.urlencoded({ extended: false }));
+
+app.set("view engine", "ejs");
+app.set("views", path.resolve(__dirname, "src", "views"));
 
 app.use(authRoutes);
 

@@ -1,12 +1,10 @@
-let userDb = {
-  id: 1,
-  username: "asuka",
-  password: "letasukain"
-};
+const lgr = require("../../utils/logging/logger").logger;
+
+let userDb = new Map();
 
 class UserService {
   getUserById(id) {
-    const storedUser = id === 1 ? userDb : null;
+    const storedUser = userDb.get(id);
 
     if (storedUser)
       return storedUser;
@@ -14,12 +12,10 @@ class UserService {
       return null;
   }
 
-  createUser(id, username, password) {
-    userDb = {
-      id: id,
-      username: username,
-      password: password
-    }
+  createUser(id, username) {
+    const user = userDb.set(id, username);
+    lgr.info("INSERTed user %o", user);
+
     return userDb;
   }
 }

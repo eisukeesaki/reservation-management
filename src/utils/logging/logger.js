@@ -27,7 +27,7 @@ function logRequest(req, res, next) {
     cookies: req.cookies,
     headers: req.headers,
     body: req.body,
-    session: req.session.passport
+    // session: req.session.passport
   });
   next();
 }

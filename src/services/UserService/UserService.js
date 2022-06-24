@@ -1,4 +1,4 @@
-const lgr = require("../../utils/logging/logger").logger;
+const { logger: l } = require(__r + "/src/utils/logging/logger");
 
 let userDb = new Map();
 
@@ -14,7 +14,7 @@ class UserService {
 
   createUser(id, username) {
     const user = userDb.set(id, username);
-    lgr.info("INSERTed user %o", user);
+    l.info("INSERTed user %o", user);
 
     return userDb;
   }

@@ -1,10 +1,12 @@
-const { logRequest, logResponse } = require("../utils/logging/logger");
-const lgr = require("../utils/logging/logger").logger;
 require("dotenv").config();
+const { logger: l, logRequest } = require(__r + "/src/utils/logging/logger");
+const app = require(__r + "/src/app");
+const router = require("express").Router();
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20");
-const router = require("express").Router();
 const { userService } = require("../services");
+
+app.use(passport.initialize());
 
 passport.use(new GoogleStrategy(
   {
@@ -26,14 +28,14 @@ passport.use(new GoogleStrategy(
 ));
 
 passport.serializeUser(function(user, cb) {
-  lgr.info("serializeUser", user);
+  l.info("serializer - user =", user);
   process.nextTick(function() {
     cb(null, { id: user.id, username: user.username });
   });
 });
 
 passport.deserializeUser(function(user, cb) {
-  lgr.info("deserializeUser", user);
+  l.info("deserializer - user =", user);
   process.nextTick(function() {
     return cb(null, user);
   });
@@ -42,17 +44,17 @@ passport.deserializeUser(function(user, cb) {
 router.all("/", logRequest);
 
 router.get("/", (req, res) => {
-  if (req.session.passport) {
+  if (req.session && req.session.passport) {
     const seshUser = req.session.passport.user;
     const storedUser = userService.getUserById(seshUser && seshUser.id);
 
     if (!storedUser) {
-      lgr.info("user does not exist in db. redirecting to /login/federated/google");
+      l.info("user does not exist in db. redirecting to /login/federated/google");
       return res.redirect("/login/federated/google");
     }
   }
   else {
-    lgr.info("session does not exist. redirecting to /login/federated/google");
+    l.info("session does not exist. redirecting to /login/federated/google");
     return res.redirect("/login/federated/google");
   }
 
@@ -67,13 +69,17 @@ router.get("/login",
 
 router.get("/login/federated/google",
   (req, res, next) => {
-    lgr.info("initiating OAuth flow ...");
+    l.info("initiating OAuth flow ...");
     next();
   },
   passport.authenticate("google")
 );
 
 router.get("/oauth2/redirect/google",
+  (req, res, next) => {
+    l.info("GET /oauth2/redirect/google - req.query =", req.query);
+    next();
+  },
   passport.authenticate("google", {
     successReturnToOrRedirect: "/",
     failureRedirect: "/login"
